@@ -1,20 +1,18 @@
-from fastapi import FastAPI, Depends
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.offersModel import Base, Offers
-from app.offersShemas import OffersCreate, OffersResponse
+from app.database import SessionLocal
+from app.models.offersModel import Offers
+from app.security import hash_password
+from app.shemas.offersShemas import OffersCreate, OffersResponse
+from app.models.storeModel import Store
+from app.shemas.storeShemas import StoreCreate, StoreResponse
+from app.models.userProfileModel import UserProfile
+from app.shemas.userShemas import UserCreate, UserResponse
+from app.models.usersModel import Users
 
 app = FastAPI(title="API de Promoções")
-
-# Conexão PostgreSQL
-DATABASE_URL = "postgresql://dbproduct_zfda_user:xEP9aNQpvXGXQtN3FX1PCPxTOoLPp0ga@dpg-d4ut4adactks73fa1k60-a.ohio-postgres.render.com/dbproduct_zfda"
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Criar tabelas
-Base.metadata.create_all(bind=engine)
 
 # Middleware CORS
 app.add_middleware(
@@ -48,3 +46,51 @@ def post_offers(oferta: OffersCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(nova_oferta)
     return nova_oferta
+
+@app.post("/register/store", response_model=StoreResponse)
+def post_store(store: StoreCreate, db: Session = Depends(get_db)):
+
+    # Verifica email
+    if db.query(Users).filter(Users.email == store.email).first():
+        raise HTTPException(status_code=400, detail="Email já cadastrado")
+
+    novo_usuario = Users(
+        email=store.email,
+        senha_hash=hash_password(store.senha),
+        tipo="STORE"
+    )
+    db.add(novo_usuario)
+    db.commit()
+    db.refresh(novo_usuario)
+
+    nova_loja = Store(
+        user_id=novo_usuario.id,
+        nome=store.nome,
+        endereco=store.endereco,
+        horario=store.horario,
+        cnpj=store.cnpj
+    )
+
+    db.add(nova_loja)
+    db.commit()
+    db.refresh(nova_loja)
+
+    return nova_loja
+
+@app.post("/register/userProfile", response_model= UserResponse)
+def post_user(user: UserCreate, db: Session = Depends(get_db)):
+    # Verifica email
+    if db.query(Users).filter(Users.email == user.email).first():
+        raise HTTPException(status_code=400, detail="Email já cadastrado")
+    
+    novo_user = Users(email=user.email, senha=hash_password(user.senha), tipo="USER")
+    db.add(novo_user)
+    db.commit()
+    db.refresh(novo_user)
+
+    novo_usuario = UserProfile(nome=user.nome, endereco=user.endereco, telefone=user.telefone)
+    db.add(novo_usuario)
+    db.commit()
+    db.refresh(novo_usuario)
+
+    return novo_usuario
