@@ -1,15 +1,27 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
+from models import Oferta
+from schemas import ofertas  # assumindo que ofertas é o schema Pydantic
+from database import SessionLocal
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Api de Promoções")
 
-# CORS (ESSENCIAL)
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Dependência para pegar a sessão
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # ROTA PRINCIPAL
 @app.get("/")
@@ -18,16 +30,14 @@ def root():
 
 # ROTA DAS OFERTAS
 @app.get("/offers")
-def get_offers():
-    return [
-        {
-            "id": 1,
-            "title": "Pizza em promoção",
-            "price": 29.90
-        },
-        {
-            "id": 2,
-            "title": "Supermercado desconto",
-            "price": 99.90
-        }
-    ]
+def get_offers(db: Session = Depends(get_db)):
+    return db.query(Oferta).all()
+
+# POST de ofertas
+@app.post("/offers", response_model=ofertas.OfertaResponse)
+def post_offers(oferta: ofertas.OfertaCreate, db: Session = Depends(get_db)):
+    nova_oferta = Oferta(nome=oferta.nome, preco=oferta.preco)
+    db.add(nova_oferta)
+    db.commit()
+    db.refresh(nova_oferta)
+    return nova_oferta
