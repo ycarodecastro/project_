@@ -35,7 +35,7 @@ def get_db():
 # Rotas
 @app.get("/")
 def root():
-    return {"message": "API funcionando 🚀"}
+    return {"message": "API funcionando "}
 
 @app.get("/offers", response_model=list[OffersResponse])
 def get_offers(db: Session = Depends(get_db)):
@@ -43,7 +43,7 @@ def get_offers(db: Session = Depends(get_db)):
 
 @app.post("/offers/create", response_model=OffersResponse)
 def post_offers(oferta: OffersCreate, db: Session = Depends(get_db)):
-    nova_oferta = Offers(nome=oferta.nome, preco=oferta.preco)
+    nova_oferta = Offers(nome=oferta.nome, estoque=oferta.estoque, precoAtual=oferta.precoAtual,precoAntigo=oferta.precoAntigo, descricao=oferta.descricao)
     db.add(nova_oferta)
     db.commit()
     db.refresh(nova_oferta)

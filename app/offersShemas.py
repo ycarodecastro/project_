@@ -2,7 +2,11 @@ from pydantic import BaseModel
 
 class OffersBase(BaseModel):
     nome: str
-    preco: float
+    estoque: int
+    precoAtual: float
+    precoAntigo: float
+    descricao: str
+
 
 class OffersCreate(OffersBase):
     pass
