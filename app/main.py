@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-import offersModel
-import offersShemas
+from app import offersModel
+from app import offersShemas
+from app.database import SessionLocal
 from app.database import SessionLocal
 from fastapi.middleware.cors import CORSMiddleware
 
