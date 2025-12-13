@@ -43,7 +43,7 @@ def get_offers(db: Session = Depends(get_db)):
 
 @app.post("/offers/create", response_model=OffersResponse)
 def post_offers(oferta: OffersCreate, db: Session = Depends(get_db)):
-    nova_oferta = Offers(nome=oferta.nome, estoque=oferta.estoque, precoAtual=oferta.precoAtual,precoAntigo=oferta.precoAntigo, descricao=oferta.descricao)
+    nova_oferta = Offers(nome=oferta.nome, estoque=oferta.estoque, precoAtual=oferta.precoAtual,precoAntigo=oferta.precoAntigo, descricao=oferta.descricao, image=oferta.image)
     db.add(nova_oferta)
     db.commit()
     db.refresh(nova_oferta)

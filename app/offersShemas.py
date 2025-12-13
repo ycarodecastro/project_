@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 class OffersBase(BaseModel):
@@ -6,6 +7,7 @@ class OffersBase(BaseModel):
     precoAtual: float
     precoAntigo: float
     descricao: str
+    image: Optional[str] = None
 
 
 class OffersCreate(OffersBase):

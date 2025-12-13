@@ -8,7 +8,8 @@ class Offers(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     nome = Column(String, nullable=False)
-    estoque = Column(Integer, nullabla=False)
+    estoque = Column(Integer, nullable=False)
     precoAtual = Column(Float, nullable=False)
     precoAntigo = Column(Float, nullable=False)
     descricao = Column(String, nullable=False)
+    image = Column(String, nullable=False)
