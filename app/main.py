@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from models import ofertas
+from models import OfertaModel
 from schemas import ofertas  # assumindo que ofertas é o schema Pydantic
 from database import SessionLocal
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,12 +31,12 @@ def root():
 # ROTA DAS OFERTAS
 @app.get("/offers")
 def get_offers(db: Session = Depends(get_db)):
-    return db.query(ofertas).all()
+    return db.query(OfertaModel).all()
 
 # POST de ofertas
 @app.post("/offers", response_model=ofertas.OfertaResponse)
 def post_offers(oferta: ofertas.OfertaCreate, db: Session = Depends(get_db)):
-    nova_oferta = ofertas(nome=oferta.nome, preco=oferta.preco)
+    nova_oferta = OfertaModel(nome=oferta.nome, preco=oferta.preco)
     db.add(nova_oferta)
     db.commit()
     db.refresh(nova_oferta)
