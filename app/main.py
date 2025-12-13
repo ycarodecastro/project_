@@ -9,7 +9,7 @@ from app.offersShemas import OffersCreate, OffersResponse
 app = FastAPI(title="API de Promoções")
 
 # Conexão PostgreSQL
-DATABASE_URL = "postgresql://dbproject_mh38_user:Ocd5Uwtw8Y5oZ6q6rrW15x7XiaVdhGOF@dpg-d4uoad8gjchc73cdu700-a.ohio-postgres.render.com/dbproject_mh38"
+DATABASE_URL = "postgresql://dbproduct_zfda_user:xEP9aNQpvXGXQtN3FX1PCPxTOoLPp0ga@dpg-d4ut4adactks73fa1k60-a.ohio-postgres.render.com/dbproduct_zfda"
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -43,7 +43,7 @@ def get_offers(db: Session = Depends(get_db)):
 
 @app.post("/offers/create", response_model=OffersResponse)
 def post_offers(oferta: OffersCreate, db: Session = Depends(get_db)):
-    nova_oferta = Offers(nome=oferta.nome, estoque=oferta.estoque, precoAtual=oferta.precoAtual,precoAntigo=oferta.precoAntigo, descricao=oferta.descricao, image=oferta.image)
+    nova_oferta = Offers(nome=oferta.nome, loja=oferta.loja, estoque=oferta.estoque, precoAtual=oferta.precoAtual,precoAntigo=oferta.precoAntigo, descricao=oferta.descricao, image=oferta.image)
     db.add(nova_oferta)
     db.commit()
     db.refresh(nova_oferta)

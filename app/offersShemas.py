@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class OffersBase(BaseModel):
     nome: str
     estoque: int
+    loja: str
     precoAtual: float
     precoAntigo: float
     descricao: str
