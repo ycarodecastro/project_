@@ -32,7 +32,7 @@ def root():
 def get_offers(db: Session = Depends(get_db)):
     return db.query(offersModel.Offers).all()
 
-@app.post("/offers", response_model=offersShemas.OffersResponse)
+@app.post("/offers/create", response_model=offersShemas.OffersResponse)
 def post_offers(oferta: offersShemas.OffersCreate, db: Session = Depends(get_db)):
     nova_oferta = offersModel.Offers(nome=oferta.nome, preco=oferta.preco)
     db.add(nova_oferta)
