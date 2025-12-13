@@ -3,8 +3,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from fastapi.middleware.cors import CORSMiddleware
 
-from offersModel import Base, Offers
-from offersShemas import OffersCreate, OffersResponse
+from app.offersModel import Base, Offers
+from app.offersShemas import OffersCreate, OffersResponse
 
 app = FastAPI(title="API de Promoções")
 
