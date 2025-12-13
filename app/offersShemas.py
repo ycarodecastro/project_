@@ -10,5 +10,6 @@ class OffersCreate(OffersBase):
 class OffersResponse(OffersBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
