@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 Base = declarative_base()
 
 # Criar engine SQLite
-engine = create_engine("sqlite:///./db.sqlite3", connect_args={"check_same_thread": False})
+engine = create_engine("postgresql://dbproject_mh38_user:Ocd5Uwtw8Y5oZ6q6rrW15x7XiaVdhGOF@dpg-d4uoad8gjchc73cdu700-a.ohio-postgres.render.com/dbproject_mh38")
 
 # Criar tabelas
 Base.metadata.create_all(bind=engine)
