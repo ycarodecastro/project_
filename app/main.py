@@ -87,7 +87,7 @@ def post_user(user: UserCreate, db: Session = Depends(get_db)):
     if db.query(Users).filter(Users.email == user.email).first():
         raise HTTPException(status_code=400, detail="Email já cadastrado")
     
-    novo_user = Users(email=user.email, senha=hash_password(user.senha), tipo="USER")
+    novo_user = Users(email=user.email, senha_hash=hash_password(user.senha), tipo="USER")
     db.add(novo_user)
     db.commit()
     db.refresh(novo_user)
