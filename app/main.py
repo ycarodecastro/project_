@@ -145,11 +145,13 @@ def get_store(db: Session = Depends(get_db)):
     )
 
     return [
-        UserResponse(
-            id=user.id,
-            nome=profile.nome,
-            email=user.email,
-            tipo=user.tipo
+        StoreResponse(
+            id=store.id,
+            nome=store.nome,
+            endereco=store.endereco,
+            horario=store.horario,
+            cnpj=store.cnpj
         )
-        for profile, user in resultados
+        for store, user in resultados
     ]
+
