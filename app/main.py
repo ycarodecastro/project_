@@ -14,9 +14,9 @@ from app.models.usersModel import Users
 
 app = FastAPI(title="API de Promoções")
 
-if __name__ == "__main__":
-    Base.metadata.create_all(bind=engine)
-    print("Tabelas criadas com sucesso!")
+
+Base.metadata.create_all(bind=engine)
+print("Tabelas criadas com sucesso!")
 
 # Middleware CORS
 app.add_middleware(
