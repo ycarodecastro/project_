@@ -121,7 +121,7 @@ def post_user(user: UserCreate, db: Session = Depends(get_db)):
 @app.post("/login", response_model=LoginResponse)
 def login(data: LoginRequest, db: Session = Depends(get_db)):
     # Primeiro tenta achar um usuário
-    user = db.query(Users).filter(Users.email == data.email, Users.senha == data.senha).first()
+    user = db.query(UserProfile).filter(UserProfile.email == data.email, UserProfile.senha == data.senha).first()
     if user:
         return LoginResponse(id=user.id, nome=user.nome, email=user.email, tipo="USER")
 
