@@ -1,7 +1,7 @@
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Column, ForeignKey, Integer, String, Float
 
-Base = declarative_base()
+from app.database import Base
 
 class UserProfile(Base):
     __tablename__ = "userProfile"
