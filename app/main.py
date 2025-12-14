@@ -150,7 +150,9 @@ def get_store(db: Session = Depends(get_db)):
             nome=store.nome,
             endereco=store.endereco,
             horario=store.horario,
-            cnpj=store.cnpj
+            cnpj=store.cnpj,
+            email=user.email,
+            tipo=user.tipo,
         )
         for store, user in resultados
     ]
