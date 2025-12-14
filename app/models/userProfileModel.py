@@ -10,8 +10,8 @@ class UserProfile(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     nome = Column(String, nullable=False)
-    endereco = Column(String)
-    telefone = Column(String, unique=True)
+    endereco = Column(String, nullable=True)
+    telefone = Column(String, nullable=True)
 
     user = relationship("Users", back_populates="user")
 

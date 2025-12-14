@@ -81,23 +81,41 @@ def post_store(store: StoreCreate, db: Session = Depends(get_db)):
 
     return nova_loja
 
-@app.post("/register/userProfile", response_model= UserResponse)
+@app.post("/register/userProfile", response_model=UserResponse)
 def post_user(user: UserCreate, db: Session = Depends(get_db)):
     # Verifica email
     if db.query(Users).filter(Users.email == user.email).first():
         raise HTTPException(status_code=400, detail="Email já cadastrado")
     
-    novo_user = Users(email=user.email, senha_hash=hash_password(user.senha), tipo="USER")
+    # Cria usuário
+    novo_user = Users(
+        email=user.email,
+        senha_hash=hash_password(user.senha),
+        tipo="USER"
+    )
     db.add(novo_user)
     db.commit()
     db.refresh(novo_user)
 
-    novo_usuario = UserProfile(user_id=novo_user.id,nome=user.nome, endereco=user.endereco, telefone=user.telefone)
+    # Cria perfil
+    novo_usuario = UserProfile(
+        user_id=novo_user.id,
+        nome=user.nome,
+        endereco=user.endereco,
+        telefone=user.telefone
+    )
     db.add(novo_usuario)
     db.commit()
     db.refresh(novo_usuario)
 
-    return novo_usuario
+    # Retorna UserResponse explicitamente
+    return UserResponse(
+        id=novo_user.id,
+        nome=novo_usuario.nome,
+        email=novo_user.email,
+        tipo=novo_user.tipo
+    )
+
 
 @app.get("/userProfile", response_model=list[UserResponse])
 def get_user(db: Session = Depends(get_db)):
