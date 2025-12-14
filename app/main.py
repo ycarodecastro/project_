@@ -92,7 +92,7 @@ def post_user(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(novo_user)
 
-    novo_usuario = UserProfile(nome=user.nome, endereco=user.endereco, telefone=user.telefone)
+    novo_usuario = UserProfile(user_id=novo_user.id,nome=user.nome, endereco=user.endereco, telefone=user.telefone)
     db.add(novo_usuario)
     db.commit()
     db.refresh(novo_usuario)
