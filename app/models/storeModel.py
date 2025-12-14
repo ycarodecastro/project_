@@ -15,5 +15,5 @@ class Store(Base):
     horario = Column(String, nullable=False)
     cnpj = Column(String, nullable=False, unique=True)
 
-    user = relationship("Users", back_populates="store")
+    user = relationship("Users", back_populates="user")
 
