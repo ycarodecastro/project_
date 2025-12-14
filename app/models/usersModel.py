@@ -14,5 +14,5 @@ class Users(Base):
 
     # Relacionamentos
     user = relationship("UserProfile", back_populates="user", uselist=False)
-    store = relationship("Store", back_populates="user", uselist=False)
+    store = relationship("Store", back_populates="users", uselist=False)
 
