@@ -13,5 +13,5 @@ class UserProfile(Base):
     endereco = Column(String, nullable=False)
     telefone = Column(String, nullable=False, unique=True)
 
-    user = relationship("User", back_populates="user")
+    user = relationship("Users", back_populates="user")
 
