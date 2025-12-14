@@ -120,18 +120,42 @@ def post_user(user: UserCreate, db: Session = Depends(get_db)):
 # Endpoint de login
 @app.post("/login", response_model=LoginResponse)
 def login(data: LoginRequest, db: Session = Depends(get_db)):
-    # Primeiro tenta achar um usuário
-    user = db.query(UserProfile).filter(UserProfile.email == data.email, UserProfile.senha == data.senha).first()
+    # Tenta encontrar usuário (perfil + usuário)
+    user = (
+        db.query(UserProfile, Users)
+        .join(Users, Users.id == UserProfile.user_id)
+        .filter(Users.email == data.email)
+        .first()
+    )
     if user:
-        return LoginResponse(id=user.id, nome=user.nome, email=user.email, tipo="USER")
+        profile, user_row = user
+        if user_row.senha_hash == data.senha:  # ou use função de hash se aplicável
+            return LoginResponse(
+                id=user_row.id,
+                nome=profile.nome,
+                email=user_row.email,
+                tipo=user_row.tipo
+            )
 
-    # Se não achou, tenta achar uma loja
-    store = db.query(Store).filter(Store.email == data.email, Store.senha == data.senha).first()
+    # Tenta encontrar loja
+    store = (
+        db.query(Store, Users)
+        .join(Users, Users.id == Store.user_id)
+        .filter(Users.email == data.email)
+        .first()
+    )
     if store:
-        return LoginResponse(id=store.id, nome=store.nome, email=store.email, tipo="STORE")
+        store_row, user_row = store
+        if user_row.senha_hash == data.senha:
+            return LoginResponse(
+                id=store_row.id,
+                nome=store_row.nome,
+                email=user_row.email,
+                tipo=user_row.tipo
+            )
 
-    # Nenhum encontrado
     raise HTTPException(status_code=401, detail="Email ou senha incorretos")
+
 
 
 @app.get("/userProfile", response_model=list[UserResponse])
