@@ -1,6 +1,6 @@
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Column, ForeignKey, Integer, String, Float
-from usersModel import Users
+from app.usersModel import Users
 
 Base = declarative_base()
 
