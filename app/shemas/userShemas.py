@@ -13,6 +13,8 @@ class UserResponse(BaseModel):
     id: int
     nome: str
     email: str
+    telefone: Optional[str] = None
+    endereco: Optional[str] = None
     tipo: str
 
     class Config:

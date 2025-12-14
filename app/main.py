@@ -130,6 +130,8 @@ def get_user(db: Session = Depends(get_db)):
             id=user.id,
             nome=profile.nome,
             email=user.email,
+            endereco=user.endereco if user.endereco != '' else None,
+            telefone=user.telefone if user.telefone != '' else None,
             tipo=user.tipo
         )
         for profile, user in resultados
