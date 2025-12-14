@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import Base, SessionLocal, engine
 from app.models.offersModel import Offers
 from app.security import hash_password
+from app.shemas.loginShemas import LoginRequest, LoginResponse
 from app.shemas.offersShemas import OffersCreate, OffersResponse
 from app.models.storeModel import Store
 from app.shemas.storeShemas import StoreCreate, StoreResponse
@@ -115,6 +116,22 @@ def post_user(user: UserCreate, db: Session = Depends(get_db)):
         email=novo_user.email,
         tipo=novo_user.tipo
     )
+
+# Endpoint de login
+@app.post("/login", response_model=LoginResponse)
+def login(data: LoginRequest, db: Session = Depends(get_db)):
+    # Primeiro tenta achar um usuário
+    user = db.query(Users).filter(Users.email == data.email, Users.senha == data.senha).first()
+    if user:
+        return LoginResponse(id=user.id, nome=user.nome, email=user.email, tipo="USER")
+
+    # Se não achou, tenta achar uma loja
+    store = db.query(Store).filter(Store.email == data.email, Store.senha == data.senha).first()
+    if store:
+        return LoginResponse(id=store.id, nome=store.nome, email=store.email, tipo="STORE")
+
+    # Nenhum encontrado
+    raise HTTPException(status_code=401, detail="Email ou senha incorretos")
 
 
 @app.get("/userProfile", response_model=list[UserResponse])
