@@ -127,6 +127,7 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
         .filter(Users.email == data.email)
         .first()
     )
+    
     if user:
         profile, user_row = user
         if user_row.senha_hash == data.senha:  # ou use função de hash se aplicável
