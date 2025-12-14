@@ -101,8 +101,8 @@ def post_user(user: UserCreate, db: Session = Depends(get_db)):
     novo_usuario = UserProfile(
         user_id=novo_user.id,
         nome=user.nome,
-        endereco=user.endereco,
-        telefone=user.telefone
+        endereco=user.endereco if user.endereco != '' else None,
+        telefone=user.telefone if user.telefone != '' else None  # aqui
     )
     db.add(novo_usuario)
     db.commit()
