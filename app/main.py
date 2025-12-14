@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, SessionLocal, engine
 from app.models.offersModel import Offers
-from app.security import hash_password
+from app.security import hash_password, verify_password
 from app.shemas.loginShemas import LoginRequest, LoginResponse
 from app.shemas.offersShemas import OffersCreate, OffersResponse
 from app.models.storeModel import Store
@@ -53,8 +53,8 @@ def post_offers(oferta: OffersCreate, db: Session = Depends(get_db)):
     return nova_oferta
 
 @app.post("/register/store", response_model=StoreResponse)
+@app.post("/register/store", response_model=StoreResponse)
 def post_store(store: StoreCreate, db: Session = Depends(get_db)):
-
     # Verifica email
     if db.query(Users).filter(Users.email == store.email).first():
         raise HTTPException(status_code=400, detail="Email já cadastrado")
@@ -74,13 +74,25 @@ def post_store(store: StoreCreate, db: Session = Depends(get_db)):
         endereco=store.endereco,
         horario=store.horario,
         cnpj=store.cnpj
+        
     )
 
     db.add(nova_loja)
     db.commit()
     db.refresh(nova_loja)
 
-    return nova_loja
+    # Retorna StoreResponse explicitamente
+    return StoreResponse(
+        id=nova_loja.id,
+        nome=nova_loja.nome,
+        endereco=nova_loja.endereco,
+        horario=nova_loja.horario,
+        cnpj=nova_loja.cnpj,
+        email=novo_usuario.email,
+        tipo=novo_usuario.tipo
+        # email e tipo se você quiser incluir, precisa adicionar no Pydantic ou em outro response model
+    )
+
 
 @app.post("/register/userProfile", response_model=UserResponse)
 def post_user(user: UserCreate, db: Session = Depends(get_db)):
@@ -117,20 +129,18 @@ def post_user(user: UserCreate, db: Session = Depends(get_db)):
         tipo=novo_user.tipo
     )
 
-# Endpoint de login
 @app.post("/login", response_model=LoginResponse)
 def login(data: LoginRequest, db: Session = Depends(get_db)):
-    # Tenta encontrar usuário (perfil + usuário)
+    # Tenta encontrar usuário
     user = (
         db.query(UserProfile, Users)
         .join(Users, Users.id == UserProfile.user_id)
         .filter(Users.email == data.email)
         .first()
     )
-    
     if user:
         profile, user_row = user
-        if user_row.senha_hash == data.senha:  # ou use função de hash se aplicável
+        if verify_password(data.senha, user_row.senha_hash):
             return LoginResponse(
                 id=user_row.id,
                 nome=profile.nome,
@@ -147,7 +157,7 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
     )
     if store:
         store_row, user_row = store
-        if user_row.senha_hash == data.senha:
+        if verify_password(data.senha, user_row.senha_hash):
             return LoginResponse(
                 id=store_row.id,
                 nome=store_row.nome,
