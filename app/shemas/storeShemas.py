@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 
 class StoreCreate(BaseModel):
+    nome: str
     email: str
     senha: str
-    nome: str
     endereco: str
     horario: str
     cnpj: str

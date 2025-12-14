@@ -94,3 +94,11 @@ def post_user(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(novo_usuario)
 
     return novo_usuario
+
+@app.get("/userProfile", response_model=list[UserResponse])
+def get_user(db: Session = Depends(get_db)):
+    return db.query(UserProfile).all()
+
+@app.get("/store", response_model=list[StoreResponse])
+def get_store(db: Session = Depends(get_db)):
+    return db.query(Store).all()
