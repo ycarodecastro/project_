@@ -119,7 +119,22 @@ def post_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @app.get("/userProfile", response_model=list[UserResponse])
 def get_user(db: Session = Depends(get_db)):
-    return db.query(UserProfile).all()
+    resultados = (
+        db.query(UserProfile, Users)
+        .join(Users, Users.id == UserProfile.user_id)
+        .all()
+    )
+
+    return [
+        UserResponse(
+            id=user.id,
+            nome=profile.nome,
+            email=user.email,
+            tipo=user.tipo
+        )
+        for profile, user in resultados
+    ]
+
 
 @app.get("/store", response_model=list[StoreResponse])
 def get_store(db: Session = Depends(get_db)):
