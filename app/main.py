@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.database import SessionLocal
+from app.database import Base, SessionLocal, engine
 from app.models.offersModel import Offers
 from app.security import hash_password
 from app.shemas.offersShemas import OffersCreate, OffersResponse
@@ -13,6 +13,10 @@ from app.shemas.userShemas import UserCreate, UserResponse
 from app.models.usersModel import Users
 
 app = FastAPI(title="API de Promoções")
+
+if __name__ == "__main__":
+    Base.metadata.create_all(bind=engine)
+    print("Tabelas criadas com sucesso!")
 
 # Middleware CORS
 app.add_middleware(
