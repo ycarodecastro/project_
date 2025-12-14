@@ -8,7 +8,12 @@ class LoginResponse(BaseModel):
     id: int
     nome: str
     email: str
-    tipo: str  # 'USER' ou 'STORE'
+    tipo: str
+    token: str  # se quiser autenticação futura
+    endereco: str | None = None
+    telefone: str | None = None
+    cnpj: str | None = None
+    horario: str | None = None
 
     class Config:
         from_attributes = True

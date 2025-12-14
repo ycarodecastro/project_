@@ -145,7 +145,10 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
                 id=user_row.id,
                 nome=profile.nome,
                 email=user_row.email,
-                tipo=user_row.tipo
+                tipo=user_row.tipo,
+                endereco=profile.endereco,
+                telefone=profile.telefone,
+                token="fake-token-123"
             )
 
     # Tenta encontrar loja
@@ -162,7 +165,10 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
                 id=store_row.id,
                 nome=store_row.nome,
                 email=user_row.email,
-                tipo=user_row.tipo
+                tipo=user_row.tipo,
+                token="fake-token-456",
+                cnpj=store_row.cnpj,
+                horario=store_row.horario,
             )
 
     raise HTTPException(status_code=401, detail="Email ou senha incorretos")
