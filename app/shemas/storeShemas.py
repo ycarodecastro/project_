@@ -15,6 +15,9 @@ class StoreResponse(BaseModel):
     endereco: str
     horario: str
     cnpj: str
+    email: str
+    tipo: str
+
 
     class Config:
         from_attributes = True
