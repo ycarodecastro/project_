@@ -9,6 +9,7 @@ class OffersBase(BaseModel):
     precoAntigo: float
     descricao: str
     image: Optional[str] = None
+    categoria: str
 
 
 class OffersCreate(OffersBase):

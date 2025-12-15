@@ -46,13 +46,12 @@ def get_offers(db: Session = Depends(get_db)):
 
 @app.post("/offers/create", response_model=OffersResponse)
 def post_offers(oferta: OffersCreate, db: Session = Depends(get_db)):
-    nova_oferta = Offers(nome=oferta.nome, loja=oferta.loja, estoque=oferta.estoque, precoAtual=oferta.precoAtual,precoAntigo=oferta.precoAntigo, descricao=oferta.descricao, image=oferta.image)
+    nova_oferta = Offers(nome=oferta.nome, loja=oferta.loja, estoque=oferta.estoque, precoAtual=oferta.precoAtual,precoAntigo=oferta.precoAntigo, descricao=oferta.descricao, image=oferta.image, categoria=oferta.categoria)
     db.add(nova_oferta)
     db.commit()
     db.refresh(nova_oferta)
     return nova_oferta
 
-@app.post("/register/store", response_model=StoreResponse)
 @app.post("/register/store", response_model=StoreResponse)
 def post_store(store: StoreCreate, db: Session = Depends(get_db)):
     # Verifica email

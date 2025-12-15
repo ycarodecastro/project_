@@ -14,3 +14,4 @@ class Offers(Base):
     precoAntigo = Column(Float, nullable=False)
     descricao = Column(String, nullable=False)
     image = Column(String, nullable=False)
+    categoria = Column(String, nullable=False)
